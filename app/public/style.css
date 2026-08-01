@@ -6,3 +6,40 @@
 #nav-editor:hover, #nav-projects:hover {
     text-decoration: underline;
 }
+
+#nav-bar {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    background-color: #c9ced4;
+    padding: 20px 30px;
+    border-radius: 0 0 20px 20px;
+}
+
+#editor-layout {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    height: 75vh;
+}
+
+#menu {
+    flex: 1;
+    background-color: #43689a;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+#block-panel {
+    flex: 2;
+    background-color: #87bfe0;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+#code-panel {
+    flex: 2;
+    background-color: #87bfe0;
+    border-radius: 6px;
+    padding: 15px;
+}

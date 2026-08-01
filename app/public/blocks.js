@@ -1,0 +1,4 @@
+/*
+Defintions for static code blocks.
+Will handle block creation logic here and how the blocks represent data
+*/

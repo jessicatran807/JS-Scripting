@@ -14,7 +14,7 @@ pool.connect().then(function () {
 
 app.use(express.static("public"));
 
-/* YOUR CODE HERE */
+/* serves frontend files and handles backend routing */
 
 app.listen(port, hostname, () => {
   console.log(`Listening at: http://${hostname}:${port}`);

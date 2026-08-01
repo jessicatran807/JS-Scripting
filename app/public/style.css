@@ -1,0 +1,8 @@
+#nav-editor, #nav-projects {
+    color: #222;
+    font-size: 1rem;
+}
+
+#nav-editor:hover, #nav-projects:hover {
+    text-decoration: underline;
+}

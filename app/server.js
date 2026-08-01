@@ -1,5 +1,6 @@
 const pg = require("pg");
 const express = require("express");
+const path = require("path");
 const app = express();
 
 const port = 3000;
@@ -12,7 +13,7 @@ pool.connect().then(function () {
   console.log(`Connected to database ${env.database}`);
 });
 
-app.use(express.static("public"));
+app.use(express.static(path.join("public")));
 
 /* serves frontend files and handles backend routing */
 

@@ -6,3 +6,12 @@
 #nav-editor:hover, #nav-projects:hover {
     text-decoration: underline;
 }
+
+#nav-bar {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    background-color: #c9ced4;
+    padding: 20px 30px;
+    border-radius: 0 0 20px 20px;
+}

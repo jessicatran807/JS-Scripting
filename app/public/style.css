@@ -43,3 +43,29 @@
     border-radius: 6px;
     padding: 15px;
 }
+
+#block-list div {
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#block-label {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+#block-list input {
+    padding: 4px 6px;
+    font-size: 13px;
+    width: 90px;
+    border: 1px solid #000000;
+    border-radius: 40px;
+}
+
+#make_var { background-color: #3c00ff; }
+#set_var { background-color: #ff00b7; }

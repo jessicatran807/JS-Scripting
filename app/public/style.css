@@ -44,7 +44,7 @@
     padding: 15px;
 }
 
-#block-list div {
+#block-list div, #block-workspace div {
     border-radius: 5px;
     padding: 10px;
     margin-bottom: 10px;
@@ -59,7 +59,7 @@
     font-size: 1rem;
 }
 
-#block-list input {
+#block-list input, #block-workspace input {
     padding: 4px 6px;
     font-size: 13px;
     width: 90px;

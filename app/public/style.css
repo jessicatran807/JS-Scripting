@@ -28,6 +28,7 @@
     background-color: #43689a;
     border-radius: 6px;
     padding: 15px;
+    overflow-y: auto;
 }
 
 #block-panel {
@@ -35,6 +36,7 @@
     background-color: #87bfe0;
     border-radius: 6px;
     padding: 15px;
+    overflow-y: auto;
 }
 
 #code-panel {
@@ -42,6 +44,13 @@
     background-color: #87bfe0;
     border-radius: 6px;
     padding: 15px;
+    overflow-y: auto;
+}
+
+#block-workspace {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
 }
 
 #block-list div, #block-workspace div {
@@ -67,5 +76,23 @@
     border-radius: 40px;
 }
 
+#move-up, #move-down, #delete-block {
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+#move-up {
+    margin-left: auto;
+}
+
 #make_var { background-color: #3c00ff; }
 #set_var { background-color: #ff00b7; }
+#print_val { background-color: #369564; }

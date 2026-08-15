@@ -53,6 +53,25 @@
     flex-direction: column;
 }
 
+#run-output-panel {
+    background-color: white;
+    border-radius: 6px;
+    padding: 15px;
+    margin: 0 15px 15px 15px;
+}
+
+#run-output-panel h2 {
+    font-size: 1rem;
+    margin-top: 0;
+}
+
+#run-output {
+    font-family: "Courier New", monospace;
+    white-space: pre-wrap;
+    margin: 0;
+    min-height: 40px;
+}
+
 #block-list div, #block-workspace div {
     border-radius: 5px;
     padding: 10px;
@@ -96,3 +115,16 @@
 #make_var { background-color: #3c00ff; }
 #set_var { background-color: #ff00b7; }
 #print_val { background-color: #369564; }
+#code-panel pre {
+    color: #000000;
+    border-radius: 6px;
+    padding: 15px;
+    min-height: 400px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+    
+#code-output {
+    font: "Courier New";
+    font-size: 14px;
+}

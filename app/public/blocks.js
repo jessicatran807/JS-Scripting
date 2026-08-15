@@ -16,7 +16,7 @@ let blockDefs = {
       label: "set",
       inputs: [
         { name: "name", placeholder: "myVariable" },
-        { name: "value", placeholder: "helloWorld" }
+        { name: "value", placeholder: "\"helloWorld\"" }
       ]
     },
     print_val: {
@@ -79,6 +79,7 @@ function buildBlockElement(def, includeDeleteButton) {
         deleteButton.textContent = "X";
         deleteButton.addEventListener("click", () => {
             blockDiv.remove();
+            updateCodeView();
         });
         blockDiv.append(deleteButton);
     }
@@ -113,6 +114,7 @@ function moveBlock(blockDiv, direction) {
     for (let block of blockList) {
         workspace.append(block);
     }
+    updateCodeView();
 }
 
 
@@ -148,6 +150,7 @@ function dropBlocksIntoWorkspace() {
         let def = blockDefs[type];
         let newBlock = buildBlockElement(def, true);
         workspace.append(newBlock);
+        updateCodeView();
     });
 }
 

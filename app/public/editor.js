@@ -70,4 +70,31 @@ function setupCodeViewer() {
     updateCodeView();
 }
 
+function runCode() {
+    let code = generateCode();
+    let outputElem = document.getElementById("run-output");
+
+    fetch("/run", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ code: code })
+    }).then((response) => {
+        return response.json();
+    }).then((result) => {
+        if (result.error) {
+            outputElem.textContent = "Error: " + result.error;
+        } else {
+            let text = "";
+            for (let line of result.output) {
+                text += line + "\n";
+            }
+            outputElem.textContent = text;
+        }
+    }).catch((error) => {
+        outputElem.textContent = "Error: " + error.message;
+    });
+}
+
 setupCodeViewer();

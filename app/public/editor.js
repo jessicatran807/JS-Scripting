@@ -59,6 +59,12 @@ function setupCodeViewer() {
     translateButton.addEventListener("click", updateCodeView);
     codePanel.append(translateButton);
 
+    let runButton = document.createElement("button");
+    runButton.id = "run-code";
+    runButton.textContent = "Run";
+    runButton.addEventListener("click", runCode);
+    codePanel.append(runButton);
+
     // <pre> preserves the line breaks/whitespace
     // <code> marks it as code
     let pre = document.createElement("pre");

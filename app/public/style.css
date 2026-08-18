@@ -128,3 +128,26 @@
     font: "Courier New";
     font-size: 14px;
 }
+#login-container {
+    text-align: center;
+    padding: 40px 15px;
+}
+
+#login-container h1 {
+    font-size: 1.5rem;
+}
+
+#login-container label {
+    display: inline-block;
+    width: 80px;
+    text-align: right;
+    margin-right: 5px;
+}
+
+#login-container input {
+    padding: 4px 6px;
+}
+
+#login-container button {
+    margin: 10px 10px 10px 0;
+}

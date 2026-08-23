@@ -43,6 +43,7 @@ function setupAuthForms() {
                 messageElem.textContent = "Login failed: " + result.error;
             } else {
                 messageElem.textContent = "Logged in! Go to the editor.";
+                window.location = "/projects";
             }
         });
     });

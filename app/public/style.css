@@ -151,3 +151,14 @@
 #login-container button {
     margin: 10px 10px 10px 0;
 }
+
+#projects-container {
+	display: flex;
+	height: 100vh;
+}
+
+#projects-title {
+	font-size: 3rem;
+	font-weight: 900;
+	margin: 0;
+}

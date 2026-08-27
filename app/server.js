@@ -84,6 +84,13 @@ app.post("/login", async (req, res) => {
   return res.json({ user: data.user });
 });
 
+// in server.js, near /login
+app.post("/logout", async (req, res) => {
+  let supabase = getSupabaseClient(req, res);
+  await supabase.auth.signOut();
+  res.sendStatus(200);
+});
+
 /* middleware; check if Supabase recognizes this request's session, if not, 403 response */
 let authorize = async (req, res, next) => {
   let supabase = getSupabaseClient(req, res);
@@ -106,6 +113,57 @@ let authorize = async (req, res, next) => {
   next();
 };
 
+app.post("/projects", authorize, async (req, res) => {
+  let { name, blocks } = req.body;
+  let supabase = getSupabaseClient(req, res);
+
+  let { data, error } = await supabase
+    .from("projects")
+    .insert({ user_id: req.user.id, name: name, blocks: blocks })
+    .select()
+    .single();
+
+  if (error) {
+    console.log("SAVE PROJECT ERROR", error);
+    return res.status(400).json({ error: error.message });
+  }
+
+  return res.json({ project: data });
+});
+
+app.get("/projects", authorize, async (req, res) => {
+  let supabase = getSupabaseClient(req, res);
+
+  let { data, error } = await supabase
+    .from("projects")
+    .select("id, name, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.log("LIST PROJECTS ERROR", error);
+    return res.status(400).json({ error: error.message });
+  }
+
+  return res.json({ projects: data });
+});
+
+app.get("/projects/:id", authorize, async (req, res) => {
+  let supabase = getSupabaseClient(req, res);
+
+  let { data, error } = await supabase
+    .from("projects")
+    .select("id, name, blocks")
+    .eq("id", req.params.id)
+    .single();
+
+  if (error) {
+    console.log("GET PROJECT ERROR", error);
+    return res.status(400).json({ error: error.message });
+  }
+
+  return res.json({ project: data });
+});
+
 app.post("/run", (req, res) => {
   let code = req.body.code;
 
@@ -125,6 +183,10 @@ app.post("/run", (req, res) => {
   console.log = originalLog;
 
   res.json({ output: output, error: errorMessage });
+});
+
+app.get("/current-user", authorize, (req, res) => {
+  res.json({ user: req.user });
 });
 
 app.listen(port, hostname, () => {

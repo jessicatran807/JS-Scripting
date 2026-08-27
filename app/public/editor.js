@@ -28,9 +28,9 @@ function getBlockValues(blockDiv) {
 }
 
 // turn a single block element into its line of JS code
-function translateBlock(blockDiv) {
-    let translator = blockTranslators[blockDiv.id];
-    return translator(getBlockValues(blockDiv));
+function translateBlock(type, values) {
+    let translator = blockTranslators[type];
+    return translator(values);
 }
 
 // translate every block currently in the workspace
@@ -38,7 +38,15 @@ function generateCode() {
     let workspace = document.getElementById("block-workspace");
     let code = "";
     for (let blockDiv of workspace.children) {
-        code += translateBlock(blockDiv) + "\n";
+        code += translateBlock(blockDiv.id, getBlockValues(blockDiv)) + "\n";
+    }
+    return code;
+}
+
+function generateCodeFromBlocks(blocks) {
+    let code = "";
+    for (let block of blocks) {
+        code += translateBlock(block.type, block.values) + "\n";
     }
     return code;
 }
@@ -49,7 +57,6 @@ function updateCodeView() {
     codeElem.textContent = generateCode();
 }
 
-// set up the <pre><code> output area and a manual translate button to update the code
 function setupCodeViewer() {
     let codePanel = document.getElementById("code-panel");
 
@@ -65,8 +72,6 @@ function setupCodeViewer() {
     runButton.addEventListener("click", runCode);
     codePanel.append(runButton);
 
-    // <pre> preserves the line breaks/whitespace
-    // <code> marks it as code
     let pre = document.createElement("pre");
     let code = document.createElement("code");
     code.id = "code-output";
@@ -103,4 +108,63 @@ function runCode() {
     });
 }
 
+function serializeWorkspace() {
+    let workspace = document.getElementById("block-workspace");
+    let blocks = [];
+    for (let blockDiv of workspace.children) {
+        blocks.push({ type: blockDiv.id, values: getBlockValues(blockDiv) });
+    }
+    return blocks;
+}
+
+function loadWorkspace(blocks) {
+    let workspace = document.getElementById("block-workspace");
+    workspace.textContent = "";
+    for (let saved of blocks) {
+        let def = blockDefs[saved.type];
+        let blockDiv = buildBlockElement(def, true);
+        for (let inputElem of blockDiv.querySelectorAll("input")) {
+            if (saved.values.hasOwnProperty(inputElem.name)) {
+                inputElem.value = saved.values[inputElem.name];
+            }
+        }
+        workspace.append(blockDiv);
+    }
+    updateCodeView();
+}
+
+function saveProject() {
+    let name = document.getElementById("project-name-input").value;
+    let messageElem = document.getElementById("save-message");
+
+    fetch("/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name, blocks: serializeWorkspace() })
+    }).then((r) => r.json()).then((result) => {
+        if (result.error) {
+            messageElem.textContent = "Save failed: " + result.error;
+        } else {
+            messageElem.textContent = "Saved!";
+        }
+    }).catch((error) => {
+        messageElem.textContent = "Save failed: " + error.message;
+    });
+}
+
+function setupSaveButton() {
+    let saveButton = document.getElementById("save-button");
+    saveButton.addEventListener("click", saveProject);
+}
+
+function showSaveIfLoggedIn() {
+    fetch("/current-user").then((response) => {
+        if (response.ok) {
+            document.getElementById("save-bar").style.display = "block";
+        }
+    });
+}
+
 setupCodeViewer();
+setupSaveButton();
+showSaveIfLoggedIn();

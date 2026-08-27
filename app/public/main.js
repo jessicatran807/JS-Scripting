@@ -69,5 +69,30 @@ function setupAuthForms() {
     });
 }
 
+function setupNavAuthStatus() {
+    let statusElem = document.getElementById("nav-auth-status");
+    statusElem.textContent = "";
+
+    fetch("/current-user").then((response) => {
+        if (response.ok) {
+            return response.json().then((result) => {
+                statusElem.textContent = "User: " + result.user.email + " ";
+
+                let logoutButton = document.createElement("button");
+                logoutButton.textContent = "Logout";
+                logoutButton.addEventListener("click", () => {
+                    fetch("/logout", { method: "POST" }).then(() => {
+                        setupNavAuthStatus();
+                    });
+                });
+                statusElem.append(logoutButton);
+            });
+        } else {
+            statusElem.textContent = "You are not logged in";
+        }
+    });
+}
+
+setupNavAuthStatus();
 setupAuth();
 setupAuthForms();

@@ -12,7 +12,14 @@
 		<a href="/" id="nav-editor">Editor</a>
 		<a href="/projects/" id="nav-projects">My projects</a>
 		<a href="/login/" id="nav-login">Login</a>
+		<span id="nav-auth-status"></span>
 	</nav>
+
+	<div id="save-bar" style="display: none;">
+		<input type="text" id="project-name-input" placeholder="Project name">
+		<button id="save-button">Save</button>
+		<span id="save-message"></span>
+	</div>
 
 	<div id="editor-layout">
 		<div id="menu">
@@ -37,7 +44,8 @@
 		<h2>Output</h2>
 		<pre id="run-output"></pre>
 	</div>
-	
+
+<script src="/main.js"></script>
 <script src="blocks.js"></script>
 <script src="editor.js"></script>
 </body>

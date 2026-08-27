@@ -16,6 +16,10 @@
     border-radius: 0 0 20px 20px;
 }
 
+#nav-auth-status {
+    margin-left: auto;
+}
+
 #editor-layout {
     display: flex;
     gap: 15px;

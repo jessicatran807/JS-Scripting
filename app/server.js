@@ -9,7 +9,6 @@ let hostname = "localhost";
 let port = 3000;
 
 let app = express();
-app.use(express.static(path.join("public")));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -91,7 +90,6 @@ app.post("/logout", async (req, res) => {
   res.sendStatus(200);
 });
 
-/* middleware; check if Supabase recognizes this request's session, if not, 403 response */
 let authorize = async (req, res, next) => {
   let supabase = getSupabaseClient(req, res);
 
@@ -113,7 +111,7 @@ let authorize = async (req, res, next) => {
   next();
 };
 
-app.post("/projects", authorize, async (req, res) => {
+app.post("/api/projects", authorize, async (req, res) => {
   let { name, blocks } = req.body;
   let supabase = getSupabaseClient(req, res);
 
@@ -131,12 +129,13 @@ app.post("/projects", authorize, async (req, res) => {
   return res.json({ project: data });
 });
 
-app.get("/projects", authorize, async (req, res) => {
+app.get("/api/projects", authorize, async (req, res) => {
   let supabase = getSupabaseClient(req, res);
 
   let { data, error } = await supabase
     .from("projects")
     .select("id, name, created_at")
+    .eq("user_id", req.user.id)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -147,13 +146,14 @@ app.get("/projects", authorize, async (req, res) => {
   return res.json({ projects: data });
 });
 
-app.get("/projects/:id", authorize, async (req, res) => {
+app.get("/api/projects/:id", authorize, async (req, res) => {
   let supabase = getSupabaseClient(req, res);
 
   let { data, error } = await supabase
     .from("projects")
     .select("id, name, blocks")
     .eq("id", req.params.id)
+    .eq("user_id", req.user.id)
     .single();
 
   if (error) {
@@ -188,6 +188,8 @@ app.post("/run", (req, res) => {
 app.get("/current-user", authorize, (req, res) => {
   res.json({ user: req.user });
 });
+
+app.use(express.static(path.join("public")));
 
 app.listen(port, hostname, () => {
   console.log(`http://${hostname}:${port}`);

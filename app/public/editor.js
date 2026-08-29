@@ -2,7 +2,7 @@
 This will connect blocks to their JS equivalent code
 */
 
-// returns the given value, or a placeholder if it's empty
+// here we fill in placeholder if empty val
 function fillOrPlaceholder(value) {
     if (value === "") {
         return "____";
@@ -10,15 +10,13 @@ function fillOrPlaceholder(value) {
     return value;
 }
 
-// translator function per block type:
-// takes the block's input values (keyed by input name, from blockDefs in blocks.js) and returns a line of JS
+// here we map each block type to func that makes vals into line of JS
 let blockTranslators = {
     make_var: (values) => `let ${fillOrPlaceholder(values.name)};`,
     set_var: (values) => `${fillOrPlaceholder(values.name)} = ${fillOrPlaceholder(values.value)};`,
     print_val: (values) => `console.log(${fillOrPlaceholder(values.value)});`
 };
 
-// pull the current input values out of a block element, keyed by input name
 function getBlockValues(blockDiv) {
     let values = {};
     for (let inputElem of blockDiv.querySelectorAll("input")) {
@@ -33,15 +31,35 @@ function translateBlock(type, values) {
     return translator(values);
 }
 
-// translate every block currently in the workspace
+// translate every block currently in the workspace, starting at the top level
 function generateCode() {
     let workspace = document.getElementById("block-workspace");
+    return generateCodeForContainer(workspace, 0);
+}
+
+// translate every block inside a given container (the top-level workspace, or a loop body), at a given indent level
+function generateCodeForContainer(container, indentLevel) {
+    let indent = "";
+    for (let i = 0; i < indentLevel; i = i + 1) {
+        indent = indent + "    ";
+    }
+
     let code = "";
-    for (let blockDiv of workspace.children) {
-        code += translateBlock(blockDiv.id, getBlockValues(blockDiv)) + "\n";
+    for (let blockDiv of container.children) {
+        if (blockDiv.id === "for_loop") {
+            let values = getBlockValues(blockDiv);
+            let count = fillOrPlaceholder(values.count);
+            code += `${indent}for (let i = 0; i < ${count}; i++) {\n`;
+            let loopBody = blockDiv.querySelector("#loop-body");
+            code += generateCodeForContainer(loopBody, indentLevel + 1);
+            code += `${indent}}\n`;
+        } else {
+            code += indent + translateBlock(blockDiv.id, getBlockValues(blockDiv)) + "\n";
+        }
     }
     return code;
 }
+
 
 function generateCodeFromBlocks(blocks) {
     let code = "";
@@ -124,7 +142,7 @@ function loadWorkspace(blocks) {
         let def = blockDefs[saved.type];
         let blockDiv = buildBlockElement(def, true);
         for (let inputElem of blockDiv.querySelectorAll("input")) {
-            if (saved.values.hasOwnProperty(inputElem.name)) {
+            if (inputElem.name in saved.values) {
                 inputElem.value = saved.values[inputElem.name];
             }
         }
@@ -137,7 +155,7 @@ function saveProject() {
     let name = document.getElementById("project-name-input").value;
     let messageElem = document.getElementById("save-message");
 
-    fetch("/projects", {
+    fetch("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: name, blocks: serializeWorkspace() })
@@ -165,6 +183,23 @@ function showSaveIfLoggedIn() {
     });
 }
 
+function loadProjectFromProjectID() {
+    //get id in the url
+    let urlString = location.search;
+    let projectId = null;
+    if (urlString.indexOf("project=") !== -1) {
+        let afterEquals = urlString.split("project=")[1];
+        projectId = afterEquals.split("&")[0]; 
+    }
+    if (!projectId) return;
+    fetch("/api/projects/" + projectId).then((response) => response.json()).then((result) => {
+        if (result.error) return;
+        loadWorkspace(result.project.blocks);
+        document.getElementById("project-name-input").value = result.project.name || "";
+    });
+}
+
 setupCodeViewer();
 setupSaveButton();
 showSaveIfLoggedIn();
+loadProjectFromProjectID();

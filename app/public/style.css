@@ -1,9 +1,9 @@
-#nav-editor, #nav-projects {
+#nav-editor, #nav-projects, #nav-login {
     color: #222;
     font-size: 1rem;
 }
 
-#nav-editor:hover, #nav-projects:hover {
+#nav-editor:hover, #nav-projects:hover, #nav-login:hover {
     text-decoration: underline;
 }
 
@@ -99,6 +99,21 @@
     border-radius: 40px;
 }
 
+#for_loop {
+    flex-wrap: wrap;
+}
+
+#loop-body {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%; /* forces it onto its own line below the label/inputs */
+    min-height: 40px;
+    margin: 8px 0 0 20px;
+    padding: 8px;
+    border: 1px dashed #ffffff;
+    border-radius: 6px;
+}
+
 #move-up, #move-down, #delete-block {
     border: none;
     border-radius: 50%;
@@ -119,6 +134,7 @@
 #make_var { background-color: #3c00ff; }
 #set_var { background-color: #ff00b7; }
 #print_val { background-color: #369564; }
+#for_loop { background-color: #ff9800; }
 #code-panel pre {
     color: #000000;
     border-radius: 6px;
@@ -157,12 +173,22 @@
 }
 
 #projects-container {
-	display: flex;
-	height: 100vh;
+	text-align: center;
+	padding: 40px 15px;
 }
 
 #projects-title {
 	font-size: 3rem;
 	font-weight: 900;
 	margin: 0;
+}
+
+#projects-list table {
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+#projects-list th, #projects-list td {
+    border: 1px solid #000000;
+    padding: 6px 10px;
 }

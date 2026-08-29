@@ -25,7 +25,14 @@ let blockDefs = {
       inputs: [
         { name: "value", placeholder: "myVariable" }
       ]
-    }
+    },
+    for_loop: {
+    type: "for_loop",
+    label: "for loop",
+    inputs: [
+        { name: "count", placeholder: "10" }
+    ]
+}
 };
 
 
@@ -47,6 +54,12 @@ function buildBlockElement(def, includeDeleteButton) {
             blockDiv.append(toSpan);
         }
 
+        if (def.type === "for_loop" && index === 0) {
+            let repeat = document.createElement("span");
+            repeat.textContent = " repeat ";
+            blockDiv.append(repeat);
+        }
+
         let inputElem = document.createElement("input");
         inputElem.type = "text";
         inputElem.name = input.name;
@@ -54,6 +67,17 @@ function buildBlockElement(def, includeDeleteButton) {
         blockDiv.append(inputElem);
 
         index = index + 1;
+    }
+
+    if (def.type === "for_loop") {
+        let timesSpan = document.createElement("span");
+        timesSpan.textContent = " times";
+        blockDiv.append(timesSpan);
+
+        let loopBody = document.createElement("div");
+        loopBody.id = "loop-body";
+        blockDiv.append(loopBody);
+        dropBlocksIntoWorkspace(loopBody);
     }
 
     // includeDeleteButton is only for blocks in the workspace
@@ -79,12 +103,9 @@ function buildBlockElement(def, includeDeleteButton) {
         deleteButton.textContent = "X";
         deleteButton.addEventListener("click", () => {
             blockDiv.remove();
-            updateCodeView();
         });
         blockDiv.append(deleteButton);
     }
-
-
 
     return blockDiv;
 }
@@ -102,19 +123,16 @@ function moveBlock(blockDiv, direction) {
     let targetIndex = index + direction; // direction: -1 for up, 1 for down
 
     if (targetIndex < 0 || targetIndex >= blockList.length) {
-        return; // already at the top/bottom, do nothing
+        return; 
     }
 
-    // swap the two entries in the array
     let temp = blockList[targetIndex];
     blockList[targetIndex] = blockList[index];
     blockList[index] = temp;
 
-    // append everything again in the new order
     for (let block of blockList) {
         workspace.append(block);
     }
-    updateCodeView();
 }
 
 
@@ -136,23 +154,20 @@ function renderBlockDefinitions() {
     }
 }
 
-function dropBlocksIntoWorkspace() {
-  let workspace = document.getElementById("block-workspace");
-
-    workspace.addEventListener("dragover", (event) => {
-        // to implement drop and stop the browser from blocking it
+function dropBlocksIntoWorkspace(container) {
+    container.addEventListener("dragover", (event) => {
         event.preventDefault();
     });
-
-    workspace.addEventListener("drop", (event) => {
+    container.addEventListener("drop", (event) => {
         event.preventDefault();
+        event.stopPropagation(); // stop this drop from also triggering a parent container's drop handler
         let type = event.dataTransfer.getData("text/plain");
+        if (type === "for_loop" && container.id === "loop-body") return; 
         let def = blockDefs[type];
         let newBlock = buildBlockElement(def, true);
-        workspace.append(newBlock);
-        updateCodeView();
+        container.append(newBlock);
     });
 }
 
 renderBlockDefinitions();
-dropBlocksIntoWorkspace();
+dropBlocksIntoWorkspace(document.getElementById("block-workspace"));

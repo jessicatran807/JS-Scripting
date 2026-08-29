@@ -5,8 +5,22 @@ let cookieParser = require("cookie-parser");
 let { createServerClient } = require("@supabase/ssr");
 let env = require("../env.json");
 
-let hostname = "localhost";
-let port = 3000;
+process.chdir(__dirname);
+
+let port = process.env.PORT || 3000;
+let hostname;
+let supabaseUrl, supabaseAnonKey;
+
+if (process.env.NODE_ENV == "production") {
+  hostname = "0.0.0.0";
+  supabaseUrl = process.env.SUPABASE_URL;
+  supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+} else {
+  hostname = "localhost";
+  let env = require("../env.json");
+  supabaseUrl = env.SUPABASE_URL;
+  supabaseAnonKey = env.SUPABASE_ANON_KEY;
+}
 
 let app = express();
 app.use(express.json());
@@ -16,7 +30,7 @@ app.use(cookieParser());
 
 // here we create a Supabase client tied to this specific request's cookies
 function getSupabaseClient(req, res) {
-  return createServerClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY, {
+  return createServerClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, {
     cookies: {
       getAll() {
         return Object.keys(req.cookies).map((name) => ({

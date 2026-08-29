@@ -137,7 +137,7 @@ function saveProject() {
     let name = document.getElementById("project-name-input").value;
     let messageElem = document.getElementById("save-message");
 
-    fetch("/projects", {
+    fetch("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: name, blocks: serializeWorkspace() })
@@ -165,6 +165,23 @@ function showSaveIfLoggedIn() {
     });
 }
 
+function loadProjectFromProjectID() {
+    //get id in the url
+    let urlString = location.search;
+    let projectId = null;
+    if (urlString.indexOf("project=") !== -1) {
+        let afterEquals = urlString.split("project=")[1];
+        projectId = afterEquals.split("&")[0]; 
+    }
+    if (!projectId) return;
+    fetch("/api/projects/" + projectId).then((response) => response.json()).then((result) => {
+        if (result.error) return;
+        loadWorkspace(result.project.blocks);
+        document.getElementById("project-name-input").value = result.project.name || "";
+    });
+}
+
 setupCodeViewer();
 setupSaveButton();
 showSaveIfLoggedIn();
+loadProjectFromProjectID();

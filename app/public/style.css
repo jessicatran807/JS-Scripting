@@ -1,9 +1,9 @@
-#nav-editor, #nav-projects {
+#nav-editor, #nav-projects, #nav-login {
     color: #222;
     font-size: 1rem;
 }
 
-#nav-editor:hover, #nav-projects:hover {
+#nav-editor:hover, #nav-projects:hover, #nav-login:hover {
     text-decoration: underline;
 }
 
@@ -157,12 +157,22 @@
 }
 
 #projects-container {
-	display: flex;
-	height: 100vh;
+	text-align: center;
+	padding: 40px 15px;
 }
 
 #projects-title {
 	font-size: 3rem;
 	font-weight: 900;
 	margin: 0;
+}
+
+#projects-list table {
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+#projects-list th, #projects-list td {
+    border: 1px solid #000000;
+    padding: 6px 10px;
 }

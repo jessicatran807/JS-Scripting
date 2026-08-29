@@ -90,7 +90,6 @@ app.post("/logout", async (req, res) => {
   res.sendStatus(200);
 });
 
-/* middleware; check if Supabase recognizes this request's session, if not, 403 response */
 let authorize = async (req, res, next) => {
   let supabase = getSupabaseClient(req, res);
 

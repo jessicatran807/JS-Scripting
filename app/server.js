@@ -3,7 +3,6 @@ let express = require("express");
 let path = require("path");
 let cookieParser = require("cookie-parser");
 let { createServerClient } = require("@supabase/ssr");
-let env = require("../env.json");
 
 process.chdir(__dirname);
 

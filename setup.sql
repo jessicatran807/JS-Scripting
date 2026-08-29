@@ -1,1 +1,0 @@
--- database commands to set up supabase here
